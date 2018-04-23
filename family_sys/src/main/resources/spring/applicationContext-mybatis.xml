@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+		
+	
+    <!-- 配置sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 实例化sqlSessionFactory时需要使用上述配置好的数据源以及SQL映射文件 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描com.yxyqcy.family.*.*.mapper目录下的所有SQL映射的xml文件, 省掉Configuration.xml里的手工配置这样就可以被自动扫描-->
+        <property name="mapperLocations" >
+          <array>
+			<!--
+			  注意:不能使用  /*/   这种形式  否则配合myabtis 查询注解  找不到 resultmap
+			  报错
+			  IllegalArgumentException: Result Maps collection does not contain value for com.yxyqcy.family.common.dao.MenuRepository.BaseResultMap
+			<value>classpath:com/yxyqcy/family/*/com.isoft.common.mapper/*.xml</value>
+			-->
+			  <value>classpath:org/yxyqcy/family/**/mapper/*.xml</value>
+			  <value>classpath:org/activiti/**/mapper/*.xml</value>
+		  </array>
+        </property>
+        
+       
+        <!-- 该配置用于自动将类全名设置别名，全局别名设置，在映射文件中只需写别名，而不必写出整个类路径 
+        例如需要在 *Mapper.xml中声明<resultMap>的type属性为 com.isoft.mybatis.entities.User，
+        现只需要将type属性设置为User，以类名做为包名+类名的精简别名   -->
+        <!--<property name="typeAliasesPackage" value="com.yxyqcy.family.*.*.entity"></property>-->
+        <property name="configurationProperties">
+        	<props>
+        		<!-- 全局映射器启用缓存  -->
+        		<prop key="cacheEnabled">true</prop>
+        		<!--  查询时，关闭关联对象即时加载以提高性能  -->
+        	   <prop key="lazyLoadingEnabled">true</prop>
+        	   <!-- 设置关联对象加载的形态，此处为按需加载字段(加载字段由SQL指定)，不会加载关联表的所有字段，以提高性能 -->
+        	   <prop key="aggressiveLazyLoading">false</prop>
+        	   <!-- 对于未知的SQL查询，允许返回不同的结果集以达到通用的效果 -->
+        	   <prop key="multipleResultSetsEnabled">true</prop>
+        	   <!-- 允许使用列标签代替列名 -->
+				<prop key="useColumnLabel">true</prop>
+				<!-- 允许使用自定义的主键值(比如由程序生成的UUID 32位编码作为键值)，数据表的PK生成策略将被覆盖 -->
+				<prop key="useGeneratedKeys" >true</prop>
+				<!-- 给予被嵌套的resultMap以字段-属性的映射支持 -->
+				<prop key="autoMappingBehavior">FULL</prop>
+				<!-- 对于批量更新操作缓存SQL以提高性能 -->
+				<prop key="defaultExecutorType">BATCH</prop>
+				<!-- 数据库超过25000秒仍未响应则超时 -->
+				<prop key="defaultStatementTimeout">25000</prop>
+        	</props>
+        </property>
+        <property name="plugins">
+	      <array>
+	        <bean class="com.github.pagehelper.PageHelper">
+	          <property name="properties">
+	            <value>
+	            
+		        <!-- dialect = mysql -->
+	            <!-- 该参数默认为false -->
+		        <!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 -->
+		        <!-- 和startPage中的pageNum效果一样-->
+		        
+		        
+	              reasonable=false
+	              <!-- 3.5.0版本可用 - 为了支持startPage(Object params)方法 -->
+		        <!-- 增加了一个`params`参数来配置参数映射，用于从Map或ServletRequest中取值 -->
+		        <!-- 可以配置pageNum,pageSize,count,pageSizeZero,reasonable,orderBy,不配置映射的用默认值 -->
+		        <!-- 不理解该含义的前提下，不要随便复制该配置 -->
+		        
+		        
+	              rowBoundsWithCount=true
+	               <!-- 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果 -->
+       			 <!-- （相当于没有执行分页查询，但是返回结果仍然是Page类型）-->
+	              
+	              supportMethodsArguments=true
+	              
+	              pageSizeZero=false
+	               <!-- 3.3.0版本可用 - 分页参数合理化，默认false禁用 -->
+			        <!-- 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页 -->
+			        <!-- 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据 -->
+	            </value>
+	          </property>
+	        </bean>
+	        
+	     <!--<bean class="com.yxyqcy.mybatis.idgenerator.GenerateBeforeInterceptor"></bean>-->
+	      </array>
+    	</property> 
+    </bean>
+
+    <!-- Mapper接口配置扫描器 -->
+    <bean id="mapperScanner" class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 扫描com.isoft91.*这个包以及它的子包下的所有映射接口类 -->
+		<property name="basePackage" value="org.yxyqcy.family.**.dao,org.activiti.dao" />
+		
+		<!-- 扫描spring @Repository 注解类 -->
+		<property name="annotationClass" value="org.springframework.stereotype.Repository"></property>
+		<property name="properties">
+			<!--<value>-->
+					<!--mappers=com.isoft91.common.base.transfer.BaseCommonSingleTableRepository-->
+			<!--</value>-->
+			<!--
+				mappers=tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.MySqlMapper
+			-->
+			<value>
+				mappers=org.yxyqcy.family.sys.mapper.FamilySysMapper,tk.mybatis.mapper.common.MySqlMapper
+				IDENTITY=MYSQL
+				notEmpty=true
+			</value>
+		</property>
+	</bean>
+		 
+		 
+</beans>

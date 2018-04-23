@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yxyqcy.family.sys.menu.dao.MenuRepository">
+  <resultMap id="BaseResultMap" type="org.yxyqcy.family.sys.menu.entity.Menu">
+    <id column="business_id" jdbcType="VARCHAR" property="businessId" />
+    <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
+    <result column="PARENT_IDS" jdbcType="VARCHAR" property="parentIds" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="href" jdbcType="VARCHAR" property="href" />
+    <result column="target" jdbcType="VARCHAR" property="target" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="is_Activiti" jdbcType="VARCHAR" property="isActiviti" />
+    <result column="is_show" jdbcType="VARCHAR" property="isShow" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="checked" jdbcType="VARCHAR" property="checked" />
+    <result column="MODEL_ID" jdbcType="VARCHAR" property="modelId" />
+    <result column="MODEL_ID" jdbcType="VARCHAR" property="caseCount" />
+
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List">
+     BUSINESS_ID,parentId,parentIds,name,href,target,icon,sort,isActiviti,isShow,permission,FLAG
+  </sql>
+
+  <!-- 逻辑删除菜单 -->
+  <!-- 这种方式  必须配置 数据库连接  &allowMultiQueries=true-->
+  <update id="logicRemoveMenus"  parameterType="java.util.List">
+
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update sys_menu
+      <set>
+        DEL_FLAG = '1'
+      </set>
+      where BUSINESS_ID = '${item.businessId}'
+    </foreach>
+
+  </update>
+</mapper>

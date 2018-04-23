@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yxyqcy.family.home.fbook.dao.FBookRepository">
+    <resultMap id="BaseResultMap" type="org.yxyqcy.family.home.fbook.entity.FBook">
+            <id column="BUSINESS_ID" jdbcType="VARCHAR" property="businessId"/>
+            <result column="CODE" jdbcType="VARCHAR" property="code"/>
+            <result column="NAME" jdbcType="VARCHAR" property="name"/>
+            <result column="descri" jdbcType="VARCHAR" property="descri"/>
+            <result column="book_url" jdbcType="VARCHAR" property="bookUrl"/>
+            <result column="book_cover" jdbcType="VARCHAR" property="bookCover"/>
+            <result column="pages" jdbcType="INTEGER" property="pages"/>
+            <result column="classify" jdbcType="VARCHAR" property="classify"/>
+            <result column="book_case" jdbcType="VARCHAR" property="bookCase"/>
+
+            <result column="is_top" jdbcType="VARCHAR" property="isTop" />
+            <result column="is_public" jdbcType="VARCHAR" property="isPublic" />
+
+            <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy"/>
+            <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy"/>
+            <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+            <result column="REMARKS" jdbcType="VARCHAR" property="remarks"/>
+            <result column="DEL_FLAG" jdbcType="VARCHAR" property="delFlag"/>
+            <result column="FLAG" jdbcType="VARCHAR" property="flag"/>
+    </resultMap>
+</mapper>

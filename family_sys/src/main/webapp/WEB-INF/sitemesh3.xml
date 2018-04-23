@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <!-- 指明满足“/*”的页面，将被“/WEB-INF/views/decorators/decorator.html”所装饰 -->
+
+    <mapping path="/view/background/*" decorator="/WEB-INF/view_core/view_template/back.jsp" />
+    <mapping path="/*/toBg/*" decorator="/WEB-INF/view_core/view_template/back.jsp" />
+    <!-- 指明满足“/login.jsp*”的页面，将被排除，不被装饰 -->
+    <mapping path="/view/background/login" exclue="true" />
+</sitemesh>

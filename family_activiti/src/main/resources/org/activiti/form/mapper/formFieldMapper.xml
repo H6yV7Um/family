@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.activiti.dao.WorkflowFormFieldRepository">
+
+  <resultMap id="BaseResultMap" type="org.activiti.entity.WorkflowFormField">
+    <id column="business_id" jdbcType="VARCHAR" property="businessId" />
+
+
+    <result column="plugin" jdbcType="VARCHAR" property="plugin" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="flow" jdbcType="VARCHAR" property="flow" />
+
+
+    <result column="form_id" jdbcType="VARCHAR" property="formId" />
+
+
+    <!--dataEntity-->
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+
+  </resultMap>
+</mapper>

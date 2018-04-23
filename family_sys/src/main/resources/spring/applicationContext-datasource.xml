@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+
+		<!-- 数据库配置文件位置 -->  
+		<!-- 已在core文件中加载 -->
+		  <context:property-placeholder location="classpath:/database/database.properties" />
+
+		  <!-- 加载配置属性文件 -->
+		  <context:property-placeholder location="classpath:/properties/auto.properties" />
+		 <!--  
+		    Druid是阿里巴巴开源平台上的一个项目，整个项目由数据库连接池、插件框架和SQL解析器组成。
+		 	该项目主要是为了扩展JDBC的一些限制，可以让程序员实现一些特殊的需求，比如向密钥服务请求凭证、统计SQL信息、SQL性能收集、SQL注入检查、SQL翻译等，
+			1) 可以监控数据库访问性能，Druid内置提供了一个功能强大的StatFilter插件，能够详细统计SQL的执行性能，这对于线上分析数据库访问性能有帮助。
+			 ————————————————监控界面 请在web.xml中详见DruidStatView配置——————————————————
+			 阿里巴巴连接池监控界面 http://ip：port/projectName/druid/index.html 
+			2) 替换DBCP和C3P0。Druid提供了一个高效、功能强大、可扩展性好的数据库连接池。 
+			3) 数据库密码加密。直接把数据库密码写在配置文件中，这是不好的行为，容易导致安全问题。DruidDruiver和DruidDataSource都支持PasswordCallback。 
+			4) SQL执行日志，Druid提供了不同的LogFilter，能够支持Common-Logging、Log4j和JdkLog，你可以按需要选择相应的LogFilter，监控你应用的数据库访问情况。 
+			扩展JDBC，如果你要对JDBC层有编程的需求，可以通过Druid提供的Filter-Chain机制，很方便编写JDBC层的扩展插件。
+		    属性详细说明：  http://www.open-open.com/lib/view/open1430558786084.html   
+		  -->
+	    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">  
+	    	<!-- 配置监控统计拦截的filters stat，去掉后监控界面sql无法统计 -->  
+		    <!-- 整合了log4j日志记录-->
+		    <!--wall选项为该连接池为防止sql注入的拦截器,但是不能实现批量插入 -->
+		    <!--config选项为数据库密码加密配置
+		    <property name="filters" value="config,stat,wall,wall-filter,log4j" />-->
+			<property name="filters" value="config,stat,wall-filter,log4j" />
+		    <!-- 基本属性 url、user、password -->  
+		    <!-- Druid 根据连接字符串自动生成驱动地址  -->
+		    <property name="url" value="${database.url}" />  
+		    <property name="username" value="${database.user}" />  
+		    <property name="password" value="${database.password}" /> 
+		    <!-- java -cp druid-0.2.23.jar com.alibaba.druid.filter.config.ConfigTools you_password -->
+      		<property name="connectionProperties" value="config.file=classpath:/database/database.properties" />
+		    <!-- 配置初始化大小、最小、最大 -->  
+		    <property name="initialSize" value="10" />  
+		    <property name="minIdle" value="10" />   
+		    <property name="maxActive" value="30" />  
+		    <!-- 配置获取连接等待超时的时间 -->  
+		    <property name="maxWait" value="60000" />  
+		    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->  
+		    <property name="timeBetweenEvictionRunsMillis" value="60000" />  
+		    <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->  
+		    <property name="minEvictableIdleTimeMillis" value="300000" />  
+		    <property name="validationQuery" value="SELECT 'x'" />  
+		    <property name="testWhileIdle" value="true" />  
+		    <property name="testOnBorrow" value="false" />  
+		    <property name="testOnReturn" value="false" />  
+		    <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->  
+		    <!-- 是否缓存preparedStatement，也就是PSCache。
+					PSCache对支持游标的数据库性能提升巨大，比如说oracle。
+					在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。
+					5.5及以上版本有PSCache，建议开启 -->
+		    <property name="poolPreparedStatements" value="true" />  
+		    <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+
+
+		</bean>
+
+
+
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="config" ref="wall-config" />
+	</bean>
+	<!--允许 批量语句-->
+	<bean id="wall-config" class="com.alibaba.druid.wall.WallConfig">
+		<property name="multiStatementAllow" value="true" />
+	</bean>
+</beans>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <!-- 指明满足“/*”的页面，将被“/WEB-INF/views/decorators/decorator.html”所装饰 -->
+
+
+    <!-- homeBack model begin -->
+    <mapping path="/view/homeBack/*" decorator="/WEB-INF/view_core/view_template/homeBack.jsp"  />
+    <mapping path="/*/toHg/*" decorator="/WEB-INF/view_core/view_template/homeBack.jsp" />
+    <mapping path="/blog/toHg/toMindUpdatePage/*" exclue="true" />
+
+    <!-- homeBack model end -->
+
+    <!-- home model begin -->
+    <!--login-->
+    <mapping path="/adminLogin*" decorator="/WEB-INF/view_core/view_template/home.jsp" />
+    <mapping path="/logout*" decorator="/WEB-INF/view_core/view_template/home.jsp" />
+    <mapping path="/global/synNoAuthentication*" decorator="/WEB-INF/view_core/view_template/home.jsp" />
+    <mapping path="/view/home/*" decorator="/WEB-INF/view_core/view_template/home.jsp" />
+    <!-- home model end -->
+
+
+    <!-- sys model begin -->
+    <mapping path="/view/background/*" decorator="/WEB-INF/view_core/view_template/back.jsp" />
+    <mapping path="/*/toBg/*" decorator="/WEB-INF/view_core/view_template/back.jsp" />
+    <!-- 指明满足“/login.jsp*”的页面，将被排除，不被装饰 -->
+    <mapping path="/view/background/login" exclue="true" />
+    <!-- sys model end -->
+</sitemesh>

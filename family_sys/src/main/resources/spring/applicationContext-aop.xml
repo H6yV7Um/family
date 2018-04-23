@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!-- 
+	为了更好的支持Mybaits分页插件，使写法具有更高的灵活性、更低的耦合度以及更优雅的编码风格 
+ * @Description: 分页AOP，具体分页方法不需要也不关心如果设置分页参数（请求页码、每页显示个数）
+ 							也不需要关心其他如总行数、总页数等信息。
+ * @Copyright: Copyright (c) 2016
+ * @author: cy
+ * @date 2016年5月20日 下午2:09:39
+ * @version V1.0
+ */
+-->
+<aop:aspectj-autoproxy/>
+<aop:config>
+	<aop:aspect ref="pageUtil">
+		<!-- .. 当前包和子包-->
+	    <aop:pointcut expression="execution(* org.yxyqcy.family..*.service..*Service.*ByPagination*(..))" id="sysPagnation" />
+	    <aop:around method="preparedPageHeplerAndloadingPageInfoSetResults" pointcut-ref="sysPagnation" />
+    </aop:aspect>
+
+	<aop:aspect ref="pageUtil">
+		<!-- .. 当前包和子包-->
+		<aop:pointcut expression="execution(* org.activiti.service..*Service.*ByPagination*(..))" id="acByPagnation" />
+		<aop:around method="preparedPageHeplerAndloadingPageInfoSetResults" pointcut-ref="acByPagnation" />
+	</aop:aspect>
+</aop:config>
+
+</beans>

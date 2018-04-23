@@ -1,0 +1,34 @@
+mybatis整合spring, mybatis配置文件 错误的时候,可能出现项目启动不了,错误不输出
+一种迅速定位解决
+找到org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory 类，在下面方法：
+protected void autowireByType(
+            String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
+
+这个方法大概在1200行左右。找到这个方法中catch异常的地方：
+
+catch (BeansException ex) {
+    throw new UnsatisfiedDependencyException(mbd.getResourceDescription(), beanName, propertyName, ex);
+}
+查看异常
+
+通过追踪代码，发现在org.springframework.beans.factory.support.AbstractBeanFactory类中的方法：
+
+protected Class<?> getTypeForFactoryBean(String beanName, RootBeanDefinition mbd) {
+    if (!mbd.isSingleton()) {
+        return null;
+    }
+    try {
+        FactoryBean<?> factoryBean = doGetBean(FACTORY_BEAN_PREFIX + beanName, FactoryBean.class, null, true);
+        return getTypeForFactoryBean(factoryBean);
+    }
+    catch (BeanCreationException ex) {
+        // Can only happen when getting a FactoryBean.
+        if (logger.isDebugEnabled()) {
+            logger.debug("Ignoring bean creation exception on FactoryBean type check: " + ex);
+        }
+        onSuppressedException(ex);
+        return null;
+    }
+}
+这里捕获异常后，直接return null导致异常被吞。
+

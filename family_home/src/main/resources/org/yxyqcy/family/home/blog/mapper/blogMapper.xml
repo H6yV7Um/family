@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yxyqcy.family.home.blog.dao.BlogRepository">
+
+  <resultMap id="BaseResultMap" type="org.yxyqcy.family.home.blog.entity.Blog">
+    <id column="business_id" jdbcType="VARCHAR" property="businessId" />
+
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="seq_date" jdbcType="TIMESTAMP" property="seqDate" />
+    <result column="star" jdbcType="FLOAT" property="star" />
+
+	<result column="blog_label_id" jdbcType="VARCHAR" property="blogLabelId" />
+    <result column="blog_md" jdbcType="VARCHAR" property="blogMd" />
+    <result column="blog_html" jdbcType="VARCHAR" property="blogHtml" />
+
+    <result column="is_top" jdbcType="VARCHAR" property="isTop" />
+    <result column="is_public" jdbcType="VARCHAR" property="isPublic" />
+
+    <result column="classify" jdbcType="VARCHAR" property="classify" />
+
+
+    <result column="bkeys" jdbcType="VARCHAR" property="bkeys" />
+	<result column="bdesc" jdbcType="VARCHAR" property="bdesc" />
+    <result column="read_times" jdbcType="INTEGER" property="readTimes" />
+
+    <result column="type" jdbcType="VARCHAR" property="type" />
+
+    <!--dataEntity-->
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>

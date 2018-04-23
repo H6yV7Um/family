@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yxyqcy.family.home.timesheet.dao.TimesheetRepository">
+
+  <resultMap id="BaseResultMap" type="org.yxyqcy.family.home.timesheet.entity.Timesheet">
+    <id column="business_id" jdbcType="VARCHAR" property="businessId" />
+
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="all_day" jdbcType="TINYINT" property="allDay" />
+    <result column="ASSESS_FLAG" property="assessFlag" jdbcType="VARCHAR" />
+    <result column="ASSESS_USER" property="assessUser" jdbcType="VARCHAR" />
+    <result column="ASSESS_DATE" property="assessDate" jdbcType="TIMESTAMP" />
+    <result column="start_date" property="start" jdbcType="TIMESTAMP" />
+    <result column="end_date" property="end" jdbcType="TIMESTAMP" />
+
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+
+    <!--dataEntity-->
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+
+
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="topic_id" jdbcType="VARCHAR" property="topicId" />
+
+  </resultMap>
+
+
+
+
+  <!--batchAssessTimeSheet 批量审核timeSheet-->
+  <!-- 这种方式  必须配置 数据库连接  &allowMultiQueries=true-->
+  <update id="batchAssessTimeSheet"  parameterType="java.util.List">
+
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update  f_timesheet
+        set ASSESS_FLAG =  #{item.assessFlag},
+            ASSESS_USER =  #{item.assessUser},
+            ASSESS_DATE =  #{item.assessDate,jdbcType=TIMESTAMP}
+      where ASSESS_FLAG = '0' and business_id = '${item.businessId}'
+
+    </foreach>
+
+  </update>
+
+
+  <!--insertBatchSheetBlog 批量插入博客日程-->
+  <!-- 这种方式  必须配置 数据库连接  &allowMultiQueries=true-->
+  <insert id="insertBatchSheetBlog"  parameterType="java.util.List">
+
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      insert into r_sheet_blog
+      (business_id,SHEET_ID,BLOG_ID) VALUES ('${item.id}','${item.sheetId}','${item.blogId}')
+    </foreach>
+
+  </insert>
+</mapper>

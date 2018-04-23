@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.1.xsd">
+	
+	<!-- 启用注解，并定义组件查找规则 ，mvc层只负责扫描@Controller -->  
+    <context:component-scan base-package="org.yxyqcy.family.**.controller,org.activiti.diagram.controller,org.activiti.controller" use-default-filters="false">
+        <context:include-filter type="annotation"  
+            expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+    
+     <!-- mvc注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+				<ref bean="stringConverter" />
+				<ref bean="jsonConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+    
+    
+     <!-- string字符串转换编码设置 -->
+     <bean id="stringConverter"
+			class="org.springframework.http.converter.StringHttpMessageConverter">
+			<property name="supportedMediaTypes">
+				<list>
+					<value>application/json;charset=UTF-8</value>
+					<value>text/plain;charset=UTF-8</value>
+					<value>text/html;charset=UTF-8</value>
+				</list>
+			</property>
+	 </bean>
+		
+		
+	 <!-- json转换器设置，默认将时间转换yyyy-MM-dd，如需要其他格式，请在bean属性中设置@DateTimeFormat属性   -->
+	 <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper">
+		   <!--
+			   <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+					<property name="dateFormat">
+						<bean class="java.text.SimpleDateFormat">
+							<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+						</bean>
+					</property>
+				</bean>
+			-->
+			<!-- null 转 空字符串-->
+			<bean class="org.yxyqcy.family.common.converter.JsonNullObjectConverter">
+				<property name="dateFormat">
+					<bean class="java.text.SimpleDateFormat">
+						<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	 </bean>
+		
+		
+		
+    
+   
+	
+	
+	    
+	 <mvc:default-servlet-handler /> 
+	
+	 <!-- 公共静态资源 -->
+	 <mvc:resources mapping="/common/css/**"   location="/WEB-INF/view_core/view_resource/common_resource/css/" />
+	 <mvc:resources mapping="/common/fonts/**"   location="/WEB-INF/view_core/view_resource/common_resource/fonts/" />
+	 <mvc:resources mapping="/common/ico/**"   location="/WEB-INF/view_core/view_resource/common_resource/ico/" />
+	 <mvc:resources mapping="/common/images/**"   location="/WEB-INF/view_core/view_resource/common_resource/images/" />
+	 <mvc:resources mapping="/common/js/**"   location="/WEB-INF/view_core/view_resource/common_resource/js/" />
+	 <mvc:resources mapping="/common/ui/**"   location="/WEB-INF/view_core/view_resource/common_resource/ui_component/" />
+	 <!-- home -->
+	 <mvc:resources mapping="/common/bower/**"   location="/WEB-INF/view_core/view_resource/common_resource/bower_component/" />
+	 <mvc:resources mapping="/page_resource/**"   location="/WEB-INF/view_core/view_resource/page_resource/" />
+	 
+
+ 	
+		
+ 
+ 
+	<!-- 配置视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="contentType" value="text/html; charset=UTF-8"/>
+		<property name="prefix" value="/WEB-INF/view_core/view_page/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+        
+    <!-- 定义文件上传处理器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="419430400"></property>
+	    <property name="defaultEncoding" value="UTF-8"></property>  
+    </bean>
+
+	<!-- 支持Shiro对Controller的方法级AOP安全控制 begin-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<!--shiro注解
+		Shiro在注解模式下(xml filter 未配置)，登录失败，与没有权限均是通过抛出异常。并且默认并没有去处理或者捕获这些异常。
+		在springMVC下需要配置捕获相应异常来通知用户信息，如果不配置异常会抛出到页面
+		org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
+
+		FamilySimpleMappingExceptionResolver  扩展 simpleMappingExceptionResolver  ajax权限请求处理
+
+		com.yxyqcy.family.common.security.FamilySimpleMappingExceptionResolver
+
+		这种方法暂不成功,目前使用  UnauthorizedException  属性 进入 controller 判断是否为ajax 处理
+	-->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!--权限不足-->
+				<prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/global/noAuthorization</prop>
+				<!--需要认证-->
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">redirect:/global/noAuthentication</prop>
+				<!--验证权限时,未授予,同时未登录
+				org.apache.shiro.authz.AuthorizationException: Not authorized to invoke method:-->
+				<prop key="org.apache.shiro.authz.AuthorizationException">redirect:/global/noAuthorization</prop>
+				<!--
+					org.apache.shiro.authz.UnauthenticatedException: This subject is anonymous - it does not have any identifying principals and authorization operations require an identity to check against.
+				 A Subject instance will acquire these identifying principals automatically after a successful login is performed be executing org.apache.shiro.subject.Subject.login(AuthenticationToken) or when 'Remember Me' functionality is enabled by the SecurityManager.
+				 This exception can also occur when a previously logged-in Subject has logged out which makes it anonymous again.  Because an identity is currently not known due to any of these conditions, authorization is denied.
+				-->
+
+			</props>
+		</property>
+	</bean>
+	<!-- Shiro end -->
+        
+	
+	
+	
+</beans>

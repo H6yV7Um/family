@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<context:component-scan base-package="org.yxyqcy.family.**.service,org.yxyqcy.family.**.component,org.yxyqcy.family.**.util,org.yxyqcy.family.**.task,org.yxyqcy.family.**.security,org.yxyqcy.family.**.security.stateless" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!--<context:annotation-config />-->
+
+	<!--<bean id="propertyConfigurer"-->
+		<!--class="com.isoft.common.base.utilities.PropertiesResourceUtility">-->
+		<!--<property name="fileEncoding" value="UTF-8"></property>-->
+		<!--<property name="locations">-->
+			<!--<list>-->
+				<!--<value>classpath:/properties/resouce-*.properties</value>-->
+			<!--</list>-->
+		<!--</property>-->
+	<!--</bean>-->
+
+
+	<!--<bean id="rmfactory" class="com.isoft91.common.base.response.ResponseMessageFactory"-->
+		<!--scope="singleton">-->
+		<!--<property name="convertermapper">-->
+			<!--<map>-->
+				<!--<entry key="easyUIGrid" value-ref="euidgconverter"></entry>-->
+				<!--<entry key="datamessage" value-ref="commconverter"></entry>-->
+				<!--<entry key="pagedata" value-ref="commconverter"></entry>-->
+				<!--<entry key="mainstatus" value-ref="commconverter"></entry>-->
+				<!--<entry key="validmessage" value-ref="commconverter"></entry>-->
+				<!--<entry key="detail" value-ref="commconverter"></entry>-->
+
+			<!--</map>-->
+		<!--</property>-->
+	<!--</bean>-->
+
+	<!--<bean id="euidgconverter"-->
+		<!--class="com.isoft91.common.base.response.EasyUIDataGridConverter"-->
+		<!--scope="singleton" />-->
+	<!--<bean id="commconverter" class="com.isoft.common.base.response.CommonDataConventer"-->
+		<!--scope="singleton"></bean>-->
+
+</beans>

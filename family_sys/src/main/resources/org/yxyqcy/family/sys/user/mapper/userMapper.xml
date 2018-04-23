@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yxyqcy.family.sys.user.dao.UserRepository">
+
+  <resultMap id="BaseResultMap" type="org.yxyqcy.family.sys.user.entity.User">
+    <id column="business_id" jdbcType="VARCHAR" property="businessId" />
+
+    <result column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="LOGIN_DATE" jdbcType="TIMESTAMP" property="loginDate" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+	<!-- <result column="USER_TYPE" jdbcType="VARCHAR" property="userType" /> -->
+	<result column="LOGIN_IP" jdbcType="VARCHAR" property="loginIp" />
+	<result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="digest_key" jdbcType="VARCHAR" property="digestKey" />
+
+
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    
+    
+    
+    <result column="PERSON_ID" property="personId" jdbcType="VARCHAR" />
+    <result column="ENTRY_DATE" property="entryDate" jdbcType="DATE" />
+    <result column="EMPL_GROUP" property="emplGroup" jdbcType="INTEGER" />
+    <result column="TRIAL_OR_NOT" property="trialOrNot" jdbcType="INTEGER" />
+    <result column="TRIAL_LONG" property="trialLong" jdbcType="INTEGER" />
+    <result column="TRIAL_DATE" property="trialDate" jdbcType="DATE" />
+    <result column="WORK_POSITION" property="workPosition" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="URGENCY_PERSON" property="urgencyPerson" jdbcType="VARCHAR" />
+    <result column="URGENCY_LINE" property="urgencyLine" jdbcType="VARCHAR" />
+    <result column="COLLEGE" property="college" jdbcType="VARCHAR" />
+    <result column="SPECIALITY" property="speciality" jdbcType="VARCHAR" />
+    <result column="ACADEMIC" property="academic" jdbcType="INTEGER" />
+    <result column="DEGREE" property="degree" jdbcType="INTEGER" />
+    <result column="GRADUATE_DATE" property="graduateDate" jdbcType="DATE" />
+    <result column="WORK_DATE" property="workDate" jdbcType="DATE" />
+    <result column="NATION" property="nation" jdbcType="INTEGER" /><!--  -->
+    <result column="HOMETOMN" property="hometown" jdbcType="VARCHAR" />
+    <result column="PERSON_PROPERTY" property="personProperty" jdbcType="INTEGER" /><!--  -->
+    <result column="BIRTHDAY" property="birthday" jdbcType="DATE" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="MARRY_OR_NOT" property="marryOrNot" jdbcType="INTEGER" />
+    <result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" />
+    <result column="BANK_NUM" property="bankNum" jdbcType="VARCHAR" />
+    <result column="ACCOUNT_BY" property="accountBy" jdbcType="VARCHAR" />
+    <result column="CONTRACT_TYPE" property="contractType" jdbcType="INTEGER" />
+    <result column="CONTRACT_START" property="contractStart" jdbcType="DATE" />
+    <result column="CONTRACT_END" property="contractEnd" jdbcType="DATE" />
+    <result column="RENEW_CONTRACT_START" property="renewContractStart" jdbcType="DATE" />
+    <result column="RENEW_CONTRACT_END" property="renewContractEnd" jdbcType="DATE" />
+    <result column="AGREEMENT_TYPE" property="agreementType" jdbcType="INTEGER" />
+    <result column="AGREEMENT_START" property="agreementStart" jdbcType="DATE" />
+    <result column="AGREEMENT_END" property="agreementEnd" jdbcType="DATE" />
+    <result column="USER_STATES" property="userStates" jdbcType="CHAR" />
+    <result column="roleId" property="roleId" jdbcType="VARCHAR" />
+
+    <result column="weixin_name" property="weixinName" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <resultMap type="org.yxyqcy.family.sys.dept.entity.DeptRole" id="Base_DeptRole">
+    <id column="business_id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="dname" />
+    <result column="DEPT_CODE" jdbcType="VARCHAR" property="dcode" />
+    <result column="deptID" jdbcType="VARCHAR" property="did" />
+    <result column="roleID" jdbcType="VARCHAR" property="rid" />
+    <result column="roleName" jdbcType="VARCHAR" property="rname" />
+    <result column="CODE" jdbcType="VARCHAR" property="rcode" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+     business_id,LOGIN_NAME,password,no,LOGIN_DATE,email,name,USER_TYPE,LOGIN_IP,mobile,FLAG
+  </sql>
+	<select id="findByLoginName" parameterType="java.lang.String" resultMap="BaseResultMap">
+	
+		select business_id,LOGIN_NAME,no,name,password,LOGIN_IP,digest_key from sys_user where LOGIN_NAME=#{loginName} and DEL_FLAG = '0' AND FLAG = '1'
+
+	</select>
+	
+	<select id="queryByNumber" parameterType="java.lang.String" resultType="int">
+	
+	select count(*) from t_userinfo where phone_number=#{phoneNumber}
+	
+	</select>
+
+   <select id="findDeptRoleByLoginName" parameterType="java.lang.String" resultMap="Base_DeptRole">
+
+		select sys_dept_role_user.business_id,sys_dept.name,sys_dept.DEPT_CODE,sys_dept.business_id deptID,sys_role.business_id roleID,sys_role.name roleName,sys_role.`CODE`  from sys_dept_role_user LEFT JOIN sys_dept_role ON(sys_dept_role_user.DEPT_ROLE_ID = sys_dept_role.business_id)  LEFT JOIN sys_dept ON(sys_dept_role.DEPT_ID = sys_dept.business_id) LEFT JOIN sys_role ON(sys_dept_role.ROLE_ID = sys_role.business_id) LEFT JOIN sys_user on(sys_dept_role_user.USER_ID = sys_user.business_id) WHERE sys_user.LOGIN_NAME=#{loginName}
+
+	</select>
+
+    <!--insertBatchUserRole 批量插入用户角色-->
+    <!-- 这种方式  必须配置 数据库连接  &allowMultiQueries=true-->
+    <insert id="insertBatchUserRole"  parameterType="java.util.List">
+
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            insert into sys_dept_role_user
+            (business_id,USER_ID,DEPT_ROLE_ID) VALUES ('${item.id}','${item.userId}','${item.deptRoleId}')
+        </foreach>
+
+    </insert>
+</mapper>
